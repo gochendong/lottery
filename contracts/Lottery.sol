@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity^0.8.16;
 
+import "./SafeMath.sol";
+
+using SafeMath for uint256;
 
 contract Lottery {
 
@@ -109,12 +112,12 @@ contract Lottery {
         }
         
         //根据当前盘内以太坊总额来确定本次中奖人可得到的奖金
-        uint totalReward = address(this).balance*rewardRate / 100;
+        uint totalReward = address(this).balance.mul(rewardRate).div(100);
         //转账给中奖人
         for (uint i = 0; i < winners.length; i++) {
             address payable winner = winners[i];
             uint bets = winnerBets[winner];
-            winner.transfer(totalReward * bets / totalBets);
+            winner.transfer(totalReward.mul(bets).div(totalBets));
         }
         //给管理员抽水
         if (address(this).balance > 0) {
